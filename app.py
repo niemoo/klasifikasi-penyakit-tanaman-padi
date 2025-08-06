@@ -94,10 +94,12 @@ def predict(image):
     img_array = np.expand_dims(img_array, axis=0)
     img_array /= 255.0
 
-    prediction = model.predict(img_array)
-    predicted_class = class_names[np.argmax(prediction)]
+    prediction = model.predict(img_array)[0]
+    predicted_index = np.argmax(prediction)
+    predicted_class = class_names[predicted_index]
+    confidence = prediction[predicted_index]
 
-    return predicted_class
+    return predicted_class, confidence
 
 
 # === Streamlit UI ===
@@ -114,9 +116,10 @@ if uploaded_file is not None:
     st.image(image, caption="Pratinjau Gambar", use_container_width=True)
 
     if st.button("🔍 Prediksi"):
-        predicted_label = predict(image)
+        predicted_label, confidence = predict(image)
 
         st.markdown(f"## ✅ Hasil Prediksi: **{predicted_label.upper()}**")
+        st.markdown(f"**Tingkat Keyakinan:** {confidence * 100:.2f}%")
         st.markdown("### 🧠 Deskripsi:")
         st.write(class_description[predicted_label])
         st.markdown("### 🔬 Gejala:")
