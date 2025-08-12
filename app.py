@@ -87,17 +87,17 @@ class_treat = {
 }
 
 
-# Fungsi prediksi
-def predict(image):
+# Fungsi classification
+def classification(image):
     image = image.resize((256, 256)) 
     img_array = tf.keras.utils.img_to_array(image)
     img_array = np.expand_dims(img_array, axis=0)
     img_array /= 255.0
 
-    prediction = model.predict(img_array)[0]
-    predicted_index = np.argmax(prediction)
+    classification = model.predict(img_array)[0]
+    predicted_index = np.argmax(classification)
     predicted_class = class_names[predicted_index]
-    confidence = prediction[predicted_index]
+    confidence = classification[predicted_index]
 
     return predicted_class, confidence
 
@@ -115,14 +115,14 @@ if uploaded_file is not None:
     image = Image.open(uploaded_file).convert("RGB")
     st.image(image, caption="Pratinjau Gambar", use_container_width=True)
 
-    if st.button("🔍 Prediksi"):
-        predicted_label, confidence = predict(image)
+    if st.button("🔍 Klasifikasi"):
+        classify_label, confidence = classification(image)
 
-        st.markdown(f"## ✅ Hasil Prediksi: **{predicted_label.upper()}**")
+        st.markdown(f"## ✅ Hasil Klasifikasi: **{classify_label.upper()}**")
         st.markdown(f"**Tingkat Keyakinan:** {confidence * 100:.2f}%")
         st.markdown("### 🧠 Deskripsi:")
-        st.write(class_description[predicted_label])
+        st.write(class_description[classify_label])
         st.markdown("### 🔬 Gejala:")
-        st.write(class_symptoms[predicted_label])
+        st.write(class_symptoms[classify_label])
         st.markdown("### 🛠️ Tindakan:")
-        st.write(class_treat[predicted_label])
+        st.write(class_treat[classify_label])
